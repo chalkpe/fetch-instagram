@@ -13,6 +13,7 @@ const app = express()
   .use(cors())
   .use(logger())
 
+app.options('*', cors())
 app.get('/:tag', (req, res) => {
   const tag = encodeURIComponent(req.params.tag)
   exec(`${phantom} ${source} ${tag}`, (err, out) =>
