@@ -46,8 +46,8 @@ function parse () {
 
     return {
       text,
-      link: a.getAttribute('href'),
       image: img.getAttribute('src'),
+      link: 'https://www.instagram.com' + a.getAttribute('href'),
       tags: (text.match(/#([^\s#]+)/g) || []).map(tag => tag.slice(1))
     }
   })
