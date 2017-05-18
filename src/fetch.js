@@ -21,11 +21,11 @@ function write (exitCode, data) {
 }
 
 function parse () {
-  const $ = (query, element = document) =>
-    Array.prototype.slice.call(element.querySelectorAll(query))
+  const query = 'article > div:last-of-type a[href^="/p/"]'
+  const pictures = Array.prototype.slice.call(document.querySelectorAll(query))
 
-  return $('a[href^="/p/"]', $('article > div').pop()).map(a => {
-    const img = $('img[id^="pImage"]', a).pop()
+  return pictures.map(a => {
+    const img = a.querySelector('img[id^="pImage"]')
     const text = (img.getAttribute('alt') || '').trim()
 
     return {
