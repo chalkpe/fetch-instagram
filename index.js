@@ -37,12 +37,15 @@ webserver.create().listen(2409, (req, res) => {
 })
 
 function parse () {
-  const query = 'article > div:nth-of-type(2) a[href^="/p/"]'
-  const pictures = Array.prototype.slice.call(document.querySelectorAll(query))
+  const $ = (query, element = document) =>
+    Array.prototype.slice.call(element.querySelectorAll(query))
+
+  const recent = $('article > div').pop()
+  const pictures = $('a[href^="/p/"]', recent)
 
   return pictures.map(a => {
-    const img = a.querySelector('img[id^="pImage"]')
-    const text = img.getAttribute('alt') || ''
+    const img = $('img[id^="pImage"]', a).pop()
+    const text = (img.getAttribute('alt') || '').trim()
 
     return {
       text,
