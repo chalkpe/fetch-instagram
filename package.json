@@ -4,9 +4,9 @@
   "description": "Fetch recent images on Instagram by tag",
   "main": "index.js",
   "scripts": {
-    "compile": "babel index.js -o phantom.js",
-    "start": "npm run compile && phantomjs phantom.js",
-    "test": "standard && npm run compile"
+    "compile": "babel fetch.js -o phantom.js",
+    "test": "npm run compile && standard",
+    "start": "npm run compile && node index.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,10 @@
   },
   "homepage": "https://github.com/ChalkPE/fetch-instagram#readme",
   "dependencies": {
+    "chalk": "^1.1.3",
+    "express": "^4.15.3",
+    "moment": "^2.18.1",
+    "morgan": "^1.8.1",
     "phantomjs-prebuilt": "^2.1.14"
   },
   "devDependencies": {

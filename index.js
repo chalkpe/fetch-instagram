@@ -1,57 +1,17 @@
-/* eslint-env phantomjs */
+const express = require('express')
+const exec = require('child_process').exec
+const logger = require('./logger')
 
-import webpage from 'webpage'
-import webserver from 'webserver'
+const app = express().use(logger())
 
-webserver.create().listen(2409, (req, res) => {
-  if (req.url === '/favicon.ico') return
+app.get('/:tag', (req, res, next) => {
+  const tag = encodeURIComponent(req.params.tag)
+  const command = `./node_modules/.bin/phantomjs phantom.js`
 
-  const page = webpage.create()
-  page.settings.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
-
-  console.log(decodeURIComponent(req.url))
-  res.setHeader('Content-Type', 'application/json')
-
-  page.open('https://www.instagram.com/explore/tags' + req.url, status => {
-    if (status !== 'success') {
-      res.statusCode = 500
-      res.write(JSON.stringify({
-        ok: false,
-        message: `Unable to load ${req.url}`
-      }))
-
-      return res.close()
-    }
-
-    setTimeout(() => {
-      res.statusCode = 200
-      res.write(JSON.stringify({
-        ok: true,
-        date: new Date(),
-        result: page.evaluate(parse)
-      }))
-
-      return res.close()
-    }, 500)
+  exec(`${command} ${tag}`, (err, stdout) => {
+    if (!err) res.json(JSON.parse(stdout))
+    else res.json({ ok: false, message: err.message })
   })
 })
 
-function parse () {
-  const $ = (query, element = document) =>
-    Array.prototype.slice.call(element.querySelectorAll(query))
-
-  const recent = $('article > div').pop()
-  const pictures = $('a[href^="/p/"]', recent)
-
-  return pictures.map(a => {
-    const img = $('img[id^="pImage"]', a).pop()
-    const text = (img.getAttribute('alt') || '').trim()
-
-    return {
-      text,
-      image: img.getAttribute('src'),
-      link: 'https://www.instagram.com' + a.getAttribute('href'),
-      tags: (text.match(/#([^\s#]+)/g) || []).map(tag => tag.slice(1))
-    }
-  })
-}
+app.listen(2409, () => console.log('Listening on port 2409'))
