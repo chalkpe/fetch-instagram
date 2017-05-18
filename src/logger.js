@@ -3,6 +3,8 @@ const moment = require('moment')
 const morgan = require('morgan')
 
 morgan.token('the-date', () => moment().format('YYYY-MM-DD[T]HH:mm:ss.SSSZZ'))
+morgan.token('the-url', (req, res) => decodeURIComponent(morgan.url(req, res)))
+
 morgan.token('the-status', (req, res) => {
   let status = morgan.status(req, res) || 0
   let color = status >= 500 ? 'red'
@@ -13,4 +15,4 @@ morgan.token('the-status', (req, res) => {
   return chalk[color](status)
 })
 
-module.exports = morgan.bind(null, ':the-date :method HTTP/:http-version :the-status :remote-addr :remote-user :url - :response-time ms')
+module.exports = morgan.bind(null, ':the-date :method HTTP/:http-version :the-status :remote-addr :remote-user :the-url - :response-time ms')

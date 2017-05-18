@@ -6,7 +6,12 @@ const source = path.resolve(root, 'dist', 'fetch.js')
 const phantom = path.resolve(root, 'node_modules', '.bin', 'phantomjs')
 
 const express = require('express')
-const app = express().use(require('./logger')())
+const logger = require('./logger')
+const cors = require('cors')
+
+const app = express()
+  .use(cors())
+  .use(logger())
 
 app.get('/:tag', (req, res) => {
   const tag = encodeURIComponent(req.params.tag)
