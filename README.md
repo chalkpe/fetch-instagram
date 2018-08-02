@@ -3,7 +3,7 @@ Fetch recent posts on Instagram by tag
 
 ## Usage
 ```bash
-$ npm install && npm start
+$ yarn && yarn start
 $ curl http://localhost:2409/foo+bar
 {
   "url": "foo+bar",

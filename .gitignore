@@ -56,6 +56,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
-# PhantomJS output
-dist/fetch.js
