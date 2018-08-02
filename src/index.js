@@ -1,24 +1,14 @@
-const path = require('path')
-const exec = require('child_process').exec
-
-const root = path.resolve(__dirname, '..')
-const source = path.resolve(root, 'dist', 'fetch.js')
-const phantom = path.resolve(root, 'node_modules', '.bin', 'phantomjs')
-
-const express = require('express')
-const logger = require('./logger')
-const cors = require('cors')
-
-const app = express()
-  .use(cors())
-  .use(logger())
-
-app.options('*', cors())
-app.get('/:tag', (req, res) => {
-  const tag = encodeURIComponent(req.params.tag)
-  exec(`${phantom} ${source} ${tag}`, (err, out) =>
-    res.json(err ? { ok: false, message: err.message } : JSON.parse(out)))
-})
-
+const Koa = require('koa')
+const cors = require('@koa/cors')
+const fetch = require('./fetch')
 const port = process.env.PORT || '2409'
-app.listen(port, () => console.log(`Listening on port ${port}`))
+
+new Koa()
+  .use(cors())
+  .use(async (ctx, next) => {
+    const url = decodeURIComponent(ctx.url.slice(1))
+    await Promise.all(url.split('+').map(fetch))
+      .then(result => (ctx.body = { url, result }))
+      .catch(err => ctx.throw(404, err.message, err.stack))
+  })
+  .listen(port, () => console.log(`Listening on port ${port}`))

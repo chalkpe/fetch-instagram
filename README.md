@@ -1,19 +1,36 @@
-# fetch-instagram [![CircleCI](https://circleci.com/gh/ChalkPE/fetch-instagram.svg?style=svg)](https://circleci.com/gh/ChalkPE/fetch-instagram) [![license](https://img.shields.io/github/license/ChalkPE/fetch-instagram.svg)](LICENSE) [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-Fetch recent images on Instagram by tag
+# fetch-instagram [![license](https://img.shields.io/github/license/ChalkPE/fetch-instagram.svg)](LICENSE) [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+Fetch recent posts on Instagram by tag
 
 ## Usage
 ```bash
 $ npm install && npm start
-$ curl http://localhost:2409/wow
+$ curl http://localhost:2409/foo+bar
 {
-  "ok": true,
-  "date": "2017-05-18T10:19:43.428Z",
+  "url": "foo+bar",
   "result": [
     {
-      "image": "https://scontent-lht6-1.c…711036_n.jpg",
-      "link": "https://www.instagram.com/p/BUOuPvNvgMO/",
-      "tags": ["wow", "awesome", "yay"],
-      "text": "Hello world #wow #awesome #yay"
+      "tag": "foo",
+      "posts": [
+        {
+          "text": "Hello world #foo #awesome #yay",
+          "image": "https://scontent-lht6-1.c…711036_n.jpg",
+          "link": "https://www.instagram.com/p/BUOuPvNvgMO/",
+          "tags": ["foo", "awesome", "yay"]
+        }
+      ],
+      "date": "2018-08-02T20:56:37.458Z"
+    },
+    {
+      "tag": "bar",
+      "posts": [
+        {
+          "text": "Test #bar #sigong #joa",
+          "image": "https://scontent-lht6-1.c…421227_n.jpg",
+          "link": "https://www.instagram.com/p/BUQNzCchWoC/",
+          "tags": ["bar", "sigong", "joa"]
+        }
+      ],
+      "date": "2018-08-02T20:56:37.458Z"
     }
   ]
 }

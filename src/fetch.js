@@ -1,40 +1,32 @@
-/* eslint-env phantomjs */
+const puppeteer = require('puppeteer')
+const base = 'https://www.instagram.com'
 
-import system from 'system'
-import webpage from 'webpage'
+module.exports = async tag => {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
 
-function main () {
-  if (system.args.length <= 1) return write(1, 'insufficient arguments')
-  const url = `https://www.instagram.com/explore/tags/${system.args[1]}/`
+  await page.goto(`${base}/explore/tags/${tag}/`)
+  await page.waitForSelector('article', { timeout: 10000 })
 
-  const page = webpage.create()
-  page.settings.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36'
+  const posts = await page.evaluate(parse, base)
+  await browser.close()
 
-  page.open(url, status => (status !== 'success')
-    ? write(1, { message: `Unable to load the url ${url}` })
-    : setTimeout(() => write(0, { date: new Date(), result: page.evaluate(parse) }), 500))
+  return { tag, posts, date: new Date() }
 }
 
-function write (exitCode, data) {
-  console.log(JSON.stringify({ ok: exitCode === 0, ...data }))
-  phantom.exit(exitCode)
-}
-
-function parse () {
-  const query = 'article > div:last-of-type a[href^="/p/"]'
+function parse (base) {
+  const query = 'article > div:nth-of-type(2) a[href^="/p/"]'
   const pictures = Array.prototype.slice.call(document.querySelectorAll(query))
 
   return pictures.map(a => {
-    const img = a.querySelector('img[id^="pImage"]')
+    const img = a.querySelector('img[src]')
     const text = (img.getAttribute('alt') || '').trim()
 
     return {
       text,
       image: img.getAttribute('src'),
-      link: 'https://www.instagram.com' + a.getAttribute('href'),
+      link: `${base}${a.getAttribute('href')}`,
       tags: (text.match(/#([^\s#]+)/g) || []).map(tag => tag.slice(1))
     }
   })
 }
-
-main()
