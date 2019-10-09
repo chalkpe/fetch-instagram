@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node .",
-    "test": "standard"
+    "test": "standard",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": "ChalkPE/fetch-instagram",
   "keywords": [
@@ -17,10 +19,14 @@
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "koa": "^2.5.2",
-    "puppeteer": "^1.6.2"
+    "puppeteer": "^1.6.2",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "standard": "^11.0.1"
   },
-  "engines" : { "node" : ">= 8.1.4" }
+  "engines": {
+    "node": ">= 8.1.4"
+  },
+  "snyk": true
 }
